@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine's Minesweeper 💖</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ffccf9, #ff4b84);
+            color: #ff3385;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+        }
+
+        h1 {
+            font-size: 3.5em;
+            color: #ff4b84;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255, 105, 180, 0.8);
+        }
+
+        .scoreboard {
+            display: flex;
+            justify-content: space-between;
+            width: 80%;
+            max-width: 400px;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            color: #ff69b4;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(8, 50px);
+            grid-template-rows: repeat(8, 50px);
+            gap: 5px;
+            background-color: #ffbae1;
+            border-radius: 20px;
+            padding: 10px;
+        }
+
+        .cell {
+            width: 50px;
+            height: 50px;
+            background-color: #f2f2f2;
+            border: 2px solid #ff69b4;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.5em;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .cell.revealed {
+            background-color: #ffe6f0;
+        }
+
+        .cell.flagged {
+            background-color: #ff3399;
+            color: white;
+        }
+
+        .cell.mined {
+            background-color: #f2f2f2;
+            color: transparent;
+        }
+
+        .cell.revealed.mined {
+            background-color: #ff4b84;
+            color: white;
+        }
+
+        .cell:hover {
+            transform: scale(1.1);
+        }
+
+        .cell.revealed:hover {
+            transform: none;
+        }
+
+        .timer, .hints {
+            font-size: 1.2em;
+        }
+
+        .timer {
+            margin-left: 10px;
+            color: #ff3385;
+        }
+
+        .start-button, .reset-button, .hint-button {
+            padding: 12px 30px;
+            background-color: #ff69b4;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.2em;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .start-button:hover, .reset-button:hover, .hint-button:hover {
+            background-color: #ff3385;
+        }
+
+        .message {
+            font-size: 2em;
+            color: #ff69b4;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .heart {
+            font-size: 2em;
+            color: #ff69b4;
+            animation: heartbeat 1s infinite;
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>Valentine's Minesweeper 💖</h1>
+
+    <div class="scoreboard">
+        <div class="score">Mines Left: <span id="mines-left">10</span></div>
+        <div class="timer">Time: <span id="timer">00:00</span></div>
+    </div>
+
+    <div class="board" id="board"></div>
+
+    <button class="start-button" onclick="startGame()">Start Game</button>
+    <button class="reset-button" onclick="resetGame()">Reset Game</button>
+    <button class="hint-button" onclick="giveHint()">Hint</button>
+
+    <div class="message" id="message"></div>
+
+    <div class="heart">❤️</div>
+
+    <!-- Audio elements -->
+    <audio id="click-sound" src="https://www.soundjay.com/button/beep-07.wav"></audio>
+    <audio id="game-over-sound" src="https://www.soundjay.com/button/beep-08.wav"></audio>
+    <audio id="win-sound" src="https://www.soundjay.com/button/beep-04.wav"></audio>
+
+    <script>
+        const boardElement = document.getElementById('board');
+        const minesLeftElement = document.getElementById('mines-left');
+        const messageElement = document.getElementById('message');
+        const timerElement = document.getElementById('timer');
+        const clickSound = document.getElementById('click-sound');
+        const gameOverSound = document.getElementById('game-over-sound');
+        const winSound = document.getElementById('win-sound');
+        
+        let board = [];
+        let revealedCells = 0;
+        let flaggedCells = 0;
+        let totalMines = 10;
+        let gameOver = false;
+        let timer;
+        let secondsElapsed = 0;
+
+        function startGame() {
+            gameOver = false;
+            revealedCells = 0;
+            flaggedCells = 0;
+            secondsElapsed = 0;
+            board = [];
+            messageElement.textContent = '';
+            minesLeftElement.textContent = totalMines;
+            boardElement.innerHTML = '';
+            timerElement.textContent = '00:00';
+            createBoard();
+            placeMines();
+            calculateAdjacentMines();
+            startTimer();
+        }
+
+        function resetGame() {
+            clearInterval(timer);
+            startGame();
+        }
+
+        function createBoard() {
+            for (let row = 0; row < 8; row++) {
+                const rowArray = [];
+                for (let col = 0; col < 8; col++) {
+                    const cell = document.createElement('div');
+                    cell.classList.add('cell');
+                    cell.dataset.row = row;
+                    cell.dataset.col = col;
+                    cell.addEventListener('click', () => revealCell(row, col));
+                    cell.addEventListener('contextmenu', (e) => {
+                        e.preventDefault();
+                        toggleFlag(row, col);
+                    });
+                    rowArray.push(cell);
+                    boardElement.appendChild(cell);
+                }
+                board.push(rowArray);
+            }
+        }
+
+        function placeMines() {
+            let minesPlaced = 0;
+            while (minesPlaced < totalMines) {
+                const row = Math.floor(Math.random() * 8);
+                const col = Math.floor(Math.random() * 8);
+                if (!board[row][col].classList.contains('mined')) {
+                    board[row][col].classList.add('mined');
+                    minesPlaced++;
+                }
+            }
+        }
+
+        function calculateAdjacentMines() {
+            for (let row = 0; row < 8; row++) {
+                for (let col = 0; col < 8; col++) {
+                    if (board[row][col].classList.contains('mined')) continue;
+
+                    let mineCount = 0;
+                    for (let r = row - 1; r <= row + 1; r++) {
+                        for (let c = col - 1; c <= col + 1; c++) {
+                            if (r >= 0 && r < 8 && c >= 0 && c < 8) {
+                                if (board[r][c].classList.contains('mined')) mineCount++;
+                            }
+                        }
+                    }
+                    board[row][col].dataset.minesAround = mineCount;
+                }
+            }
+        }
+
+        function revealCell(row, col) {
+            if (gameOver) return;
+            const cell = board[row][col];
+            if (cell.classList.contains('revealed') || cell.classList.contains('flagged')) return;
+
+            cell.classList.add('revealed');
+            clickSound.play();
+            revealedCells++;
+
+            if (cell.classList.contains('mined')) {
+                cell.style.backgroundColor = '#ff4b84';
+                cell.style.color = 'white';
+                gameOverSound.play();
+                gameOver = true;
+                messageElement.textContent = 'Game Over! 💔';
+                return;
+            }
+
+            const minesAround = Number(cell.dataset.minesAround);
+            if (minesAround === 0) {
+                revealSurroundingCells(row, col);
+            } else {
+                cell.textContent = minesAround;
+                cell.style.color = '#ff3385';
+            }
+
+            if (revealedCells === 64 - totalMines) {
+                winSound.play();
+                messageElement.textContent = 'You Win! 💖';
+                clearInterval(timer);
+            }
+        }
+
+        function revealSurroundingCells(row, col) {
+            for (let r = row - 1; r <= row + 1; r++) {
+                for (let c = col - 1; c <= col + 1; c++) {
+                    if (r >= 0 && r < 8 && c >= 0 && c < 8) {
+                        const neighborCell = board[r][c];
+                        if (!neighborCell.classList.contains('revealed')) {
+                            revealCell(r, c);
+                        }
+                    }
+                }
+            }
+        }
+
+        function toggleFlag(row, col) {
+            if (gameOver) return;
+            const cell = board[row][col];
+            if (cell.classList.contains('revealed')) return;
+            if (cell.classList.contains('flagged')) {
+                cell.classList.remove('flagged');
+                flaggedCells--;
+            } else {
+                cell.classList.add('flagged');
+                flaggedCells++;
+            }
+            minesLeftElement.textContent = totalMines - flaggedCells;
+        }
+
+        function startTimer() {
+            timer = setInterval(() => {
+                secondsElapsed++;
+                const minutes = Math.floor(secondsElapsed / 60);
+                const seconds = secondsElapsed % 60;
+                timerElement.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function giveHint() {
+            if (gameOver) return;
+            let hintGiven = false;
+            while (!hintGiven) {
+                const randomRow = Math.floor(Math.random() * 8);
+                const randomCol = Math.floor(Math.random() * 8);
+                const cell = board[randomRow][randomCol];
+                if (!cell.classList.contains('revealed') && !cell.classList.contains('mined')) {
+                    revealCell(randomRow, randomCol);
+                    hintGiven = true;
+                }
+            }
+        }
+
+        startGame(); // Initialize the game
+    </script>
+
+</body>
+</html>

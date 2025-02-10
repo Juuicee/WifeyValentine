@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I love you Imane! <3 </title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: url('Icons/background3.gif') no-repeat center center fixed;
+            background-size: cover;
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            animation: fadeIn 3s ease-out;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: transparent;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .container.show {
+            opacity: 1;
+        }
+
+        h1 {
+            font-size: 3em;
+            color: #ff69b4;
+            margin-bottom: 20px;
+            animation: sparkle 3s infinite alternate;
+        }
+
+        @keyframes sparkle {
+            0% {
+                text-shadow: 0 0 10px rgba(255, 105, 180, 1), 0 0 20px rgba(255, 105, 180, 0.8);
+            }
+            100% {
+                text-shadow: 0 0 20px rgba(255, 105, 180, 1), 0 0 30px rgba(255, 105, 180, 0.8);
+            }
+        }
+
+        .letter-container {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid #ff69b4;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 0 auto;
+            max-width: 80%;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            font-size: 1.2em;
+            color: #333;
+            position: relative;
+            animation: bounce 1.5s infinite alternate;
+        }
+
+        @keyframes bounce {
+            from {
+                transform: translateY(0);
+            }
+            to {
+                transform: translateY(-10px);
+            }
+        }
+
+        .letter-container::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 100px;
+            background: url('https://img.icons8.com/ios-filled/100/ff69b4/heart.png') no-repeat center center;
+            background-size: contain;
+        }
+
+        .message {
+            margin-top: 40px;
+            font-size: 1.5em;
+            color: #ff69b4;
+            animation: fadeIn 2s ease-in-out, pulse 2s infinite;
+            text-shadow: 0 0 15px rgba(255, 105, 180, 0.9), 0 0 30px rgba(255, 105, 180, 0.6);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .message span {
+            display: inline-block;
+            animation: sparkle 2s infinite;
+        }
+
+        .pop-up-button {
+            background: url('Icons/button.gif') no-repeat center center;
+            background-size: contain;
+            border: none;
+            width: 120px;
+            height: 120px;
+            cursor: pointer;
+            position: fixed;
+            left: 50%;
+            bottom: 20px;
+            transform: translateX(-50%);
+            z-index: 10;
+            transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.3s ease;
+        }
+
+        .pop-up-button:hover {
+            transform: translateX(-50%) scale(1.1);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+            filter: brightness(1.1);
+        }
+
+        .pop-up-button:active {
+            transform: translateX(-50%) scale(0.95);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .hide-button {
+            display: none;
+        }
+
+        .cta-message {
+            font-size: 1.3em;
+            color: #ff69b4;
+            margin-bottom: 20px;
+            animation: fadeIn 2s ease-out;
+            text-shadow: 0 0 10px rgba(255, 105, 180, 0.9);
+        }
+
+        .heart-button {
+            width: 120px;
+            height: 120px;
+            background: url('Icons/button2.png') no-repeat center center;
+            background-size: contain;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            z-index: 20;
+            animation: bounceButton 1.5s ease-in-out infinite;
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.8);
+        }
+
+        @keyframes bounceButton {
+            0% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        .heart-button:hover {
+            box-shadow: 0 0 25px rgba(255, 105, 180, 1);
+            transform: scale(1.05);
+        }
+
+        .heart-button:active {
+            transform: scale(0.95);
+            box-shadow: 0 0 10px rgba(255, 105, 180, 0.7);
+        }
+
+        .click-indicator {
+            font-size: 1.2em;
+            color: #ff69b4;
+            text-shadow: 0 0 10px rgba(255, 105, 180, 0.9);
+            animation: pulseText 1.5s ease-out infinite;
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .click-indicator i {
+            font-size: 1.5em;
+            color: #ff69b4;
+            margin-left: 10px;
+            margin-right: 10px;
+            animation: upArrow 1s infinite;
+        }
+
+        @keyframes upArrow {
+            0% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-5px);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulseText {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .new-bubble img {
+            width: 150px;
+            height: auto;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: transform 0.3s ease, margin-left 0.3s ease, margin-top 0.3s ease;
+        }
+
+        .new-bubble img.clicked {
+            transform: scale(1.5);
+            margin-left: 20px;
+            margin-top: 0;
+        }
+
+        .new-bubble img:not(.clicked) {
+            transform: scale(1);
+            margin-left: 0;
+            margin-top: 10px;
+        }
+
+        .new-bubble {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid #ff69b4;
+            border-radius: 15px;
+            padding: 20px;
+            max-width: 80%;
+            margin: 20px auto;
+            font-size: 1.2em;
+            color: #333;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            display: none;
+        }
+
+        .new-bubble.show {
+            display: block;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .special-message {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #ff69b4;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        /* New button below bubble */
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .extra-button {
+            background-color: #ff69b4;
+            color: white;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.3s ease;
+        }
+
+        .extra-button:hover {
+            background-color: #ff1493;
+            transform: scale(1.05);
+        }
+
+        .extra-button:active {
+            transform: scale(0.95);
+        }
+
+        /* Hide button initially */
+        .extra-button {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Happy Valentine's Day, Imane! 💖</h1>
+    <div class="cta-message">Click the cinnamoroll below to reveal your special surprise! 💌</div>
+    <div class="container">
+        <div class="letter-container">
+            <h2>To My Beloved Princess Imane,</h2>
+            <p>You are the light of my life, my heart's true companion and love. Every moment with you has been a precious gift, and I am endlessly grateful for you. The way you carry yourself with grace, strength, and love makes me admire you more each day. You are an amazing woman, and I am in awe of everything you do. Your heart, your mind, and your spirit—everything about you captivates me.</p>
+            <p>I promise to always be there for you, to support you in everything you do, and to work every day to be the best for you. Together, to build a future filled with love, peace, and endless happiness. No matter where life leads us, I will be right beside you, striving to make everything a reality, Inshallah.</p>
+            <p>I truly hope that everything in life always goes your way, and I will continue to make dua for your success, happiness, and well-being. You deserve nothing less than the best, and I will spend my days ensuring you feel loved, cherished, appreciated, understood, and heard.</p>
+            <p>My heart is yours, today and always. I feel incredibly lucky to have met you and to love you. I hope for us to make many beautiful memories together, my love. I love you Imane.</p>
+            <p>Enjoy your surprise I hope you enjoy<3</p>
+            <p>With all my love,</p>
+            <p>Your Future Partner</p>
+        </div>
+
+        <div class="message">
+            <span>I love you so much, forever and always. 💖</span>
+        </div>
+        <button class="heart-button" onclick="showNewBubble()"></button>
+
+        <div class="new-bubble" id="bubble">
+            <h2>Some Messages for You!</h2>
+            <p>Click on the pictures to see some messages I left you! <3</p>
+            <img src="Icons/image1.gif" alt="Image 1" onclick="showMessage('gratitude', this)">
+            <img src="Icons/image2.gif" alt="Image 2" onclick="showMessage('promise', this)">
+            <img src="Icons/200.gif" alt="Image 3" onclick="showMessage('lyrics', this)">
+            <div id="specialMessage" class="special-message"></div>
+        </div>
+
+        <div class="button-container">
+            <button class="extra-button" id="extraButton" onclick="window.location.href='game.html'">Click Me! Special Surprise<3 </button>
+        </div>
+
+        <div class="click-indicator" id="clickIndicator">
+            <i class="fas fa-arrow-up"></i>
+            Click Me!
+            <i class="fas fa-arrow-up"></i>
+        </div>
+    </div>
+
+    <button class="pop-up-button" onclick="showContainers()"></button>
+
+    <audio id="click-sound" src="Audio/button.mp3"></audio>
+    <audio id="background-music" src="Audio/blue.mp3" loop></audio>
+
+    <script>
+        function showContainers() {
+            const container = document.querySelector('.container');
+            const button = document.querySelector('.pop-up-button');
+            const ctaMessage = document.querySelector('.cta-message');
+            const clickSound = document.getElementById('click-sound');
+            const backgroundMusic = document.getElementById('background-music');
+
+            container.classList.toggle('show');
+            button.classList.add('hide-button');
+            ctaMessage.style.display = 'none';
+            clickSound.play();
+            backgroundMusic.play();
+        }
+
+        function showNewBubble() {
+            const newBubble = document.querySelector('#bubble');
+            const clickIndicator = document.querySelector('#clickIndicator');
+
+            newBubble.classList.add('show');
+            clickIndicator.style.display = 'none';
+        }
+
+        function showMessage(messageType, imageElement) {
+            const specialMessageDiv = document.querySelector('#specialMessage');
+            let message = '';
+
+            const allImages = document.querySelectorAll('.new-bubble img');
+            allImages.forEach(img => img.classList.remove('clicked'));
+
+            imageElement.classList.add('clicked');
+
+            switch (messageType) {
+                case 'gratitude':
+                    message = "Thank you for being the incredible person you are—perfect, loving, and absolutely amazing. Your presence in my life lights up my world in ways I never thought possible. You are my heart’s deepest joy, and I am so grateful for every moment with you.";
+                    break;
+                case 'promise':
+                    message = "As each day passes, my love for you deepens, becoming stronger and more beautiful. I promise to always be your unwavering support, your partner in all things, and your biggest admirer. I’ll stand by you forever, cherishing you with every beat of my heart.";
+                    break;
+                case 'lyrics':
+                    message = "I'll trust the universe will always bring me to you. I love you Imane<3";
+                    break;
+            }
+            specialMessageDiv.textContent = message;
+        }
+
+        // Show "Click Me!" button after the second button is clicked
+        document.querySelector('.heart-button').addEventListener('click', function() {
+            document.getElementById('extraButton').style.display = 'inline-block';
+        });
+    </script>
+
+    
+</body>
+</html>
