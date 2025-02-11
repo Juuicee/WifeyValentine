@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Valentine's Day Gallery</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fef2f2;
+            background-image: url('Icons/background5.gif'); /* Add the path to your GIF */
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Back button styling */
+        .back-button-container {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .back-button-container:hover {
+            transform: scale(1.1);
+        }
+
+        .back-button {
+            width: 100px;
+            height: auto;
+        }
+
+        .back-bubble {
+            background-color: #ff3385;
+            color: white;
+            font-size: 1.2em;
+            padding: 8px 12px;
+            border-radius: 25px;
+            margin-left: 10px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease-in-out;
+            white-space: nowrap;
+        }
+
+        .back-button-container:hover .back-bubble {
+            opacity: 1;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 10px;
+            overflow-y: auto;
+            max-height: 90vh;
+        }
+
+        h1 {
+            text-align: center;
+            color: #e91e63;
+            font-size: 3em;
+            margin-bottom: 20px;
+            font-family: 'Brush Script MT', cursive;
+        }
+
+        /* Gallery styles */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 0;
+            margin: 0;
+            display: none; /* Initially hidden */
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background-color: #fff;
+            opacity: 0;
+            transform: translateX(-50px);
+            animation: fadeInFromLeft 1s forwards;
+        }
+
+        .gallery-item:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+        .gallery-item:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+        .gallery-item:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+        .gallery-item:nth-child(4) {
+            animation-delay: 0.8s;
+        }
+        .gallery-item:nth-child(5) {
+            animation-delay: 1s;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.4);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .gallery-item:hover .overlay {
+            opacity: 1;
+        }
+
+        .overlay-text {
+            color: white;
+            font-size: 2em;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            padding: 0 20px;
+            max-width: 90%;
+        }
+
+        @keyframes fadeInFromLeft {
+            0% {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Button styling */
+        .start-button {
+            padding: 20px 40px;
+            font-size: 1.5em;
+            background-color: #e91e63;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .start-button:hover {
+            background-color: #c2185b;
+        }
+
+        /* Description Bubble styling */
+        .description-bubble {
+            background-color: #ff3385;
+            color: white;
+            font-size: 1.2em;
+            padding: 10px 15px;
+            border-radius: 25px;
+            margin-left: 15px;
+            white-space: nowrap;
+            display: inline-block;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        /* Make the bubble appear when hovering over the last image */
+        .gallery-item:nth-child(5):hover .description-bubble {
+            opacity: 1;
+        }
+
+        /* Arrow link positioning */
+        .arrow-link {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            z-index: 100;
+            display: none; /* Initially hidden */
+        }
+
+        .arrow-link img {
+            width: 50px;
+            height: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .arrow-link:hover img {
+            transform: scale(1.1);
+        }
+
+    </style>
+</head>
+<body>
+
+        <!-- Back button (GIF to go back to index.html) -->
+        <a href="game.html" title="Back to Home">
+            <div class="back-button-container">
+                <img src="Icons/heart3.gif" alt="Back Button" loop class="back-button" />
+                <div class="back-bubble">Back</div>
+            </div>
+        </a>
+
+        <!-- Button to reveal the gallery and start the music -->
+        <button class="start-button" onclick="startGallery()">Click to See the Gallery</button>
+
+        <!-- Background Music -->
+        <audio id="background-music" src="Audio/blue.mp3" loop></audio>
+
+        <!-- Click Sound -->
+        <audio id="click-sound" src="Audio/button.mp3"></audio>
+
+    <div class="container">
+        <h1>Valentine's Day Gallery</h1>
+        <div class="gallery" id="gallery">
+            <div class="gallery-item">
+                <img src="Icons/1.jpg" alt="Valentine 1">
+                <div class="overlay">
+                    <div class="overlay-text">I love you</div>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="Icons/3.jpg" alt="Valentine 2">
+                <div class="overlay">
+                    <div class="overlay-text">Forever and Always</div>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="Icons/4.jpg" alt="Valentine 3">
+                <div class="overlay">
+                    <div class="overlay-text">Together Forever</div>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="Icons/5.jpg" alt="Special Memory 1">
+                <div class="overlay">
+                    <div class="overlay-text">My Heart is Yours</div>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="Icons/6.jpg" alt="Special Memory 2">
+                <div class="overlay">
+                    <div class="overlay-text">My Sweet Darling Imane</div>
+                </div>
+                <!-- Description Bubble for the Last Image -->
+                <div class="description-bubble">A love that lasts forever 💕</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Arrow Link to Gratitude Page -->
+    <a href="grateful.html" class="arrow-link" id="arrow-link">
+        <img src="Icons/arrow2.gif" alt="Go to Gratitude">
+    </a>
+
+    <script>
+        function startGallery() {
+            // Play the click sound
+            document.getElementById('click-sound').play();
+
+            // Show the gallery
+            document.getElementById('gallery').style.display = 'grid';
+
+            // Play the background music
+            document.getElementById('background-music').play();
+
+            // Hide the button after it's clicked
+            document.querySelector('.start-button').style.display = 'none';
+
+            // Show the arrow link after the gallery is shown
+            document.getElementById('arrow-link').style.display = 'block';
+        }
+    </script>
+
+</body>
+</html>
+

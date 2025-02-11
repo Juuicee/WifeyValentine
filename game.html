@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Valentine's Minesweeper 💖</title>
+    <title>Imane's Arcade LoveSweeper 💖</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #ffccf9, #ff4b84);
+            background-image: url('Icons/background.gif'); /* Add your GIF here */
+            background-size: cover;
+            background-position: center;
             color: #ff3385;
             display: flex;
             justify-content: center;
@@ -15,6 +18,50 @@
             height: 100vh;
             margin: 0;
             flex-direction: column;
+            position: relative; /* Allow positioning of the image */
+        }
+
+        html, body {
+    overflow: hidden;
+    height: 100%;
+    margin: 0;
+}
+
+        /* Left side image */
+        .back-button-container {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer; /* Make the whole container clickable */
+            transition: transform 0.3s ease; /* Add transition for hover effect */
+        }
+
+        .back-button-container:hover {
+            transform: scale(1.1); /* Slight zoom effect on hover */
+        }
+
+        .back-button {
+            width: 100px; /* Adjust the size of the GIF */
+            height: auto;
+        }
+
+        .back-bubble {
+            background-color: #ff3385;
+            color: white;
+            font-size: 1.2em;
+            padding: 8px 12px;
+            border-radius: 25px;
+            margin-left: 10px;
+            opacity: 0;
+            pointer-events: none; /* Prevent interference with other elements */
+            transition: opacity 0.3s ease-in-out;
+            white-space: nowrap;
+        }
+
+        .back-button-container:hover .back-bubble {
+            opacity: 1;
         }
 
         h1 {
@@ -31,7 +78,20 @@
             max-width: 400px;
             margin-bottom: 20px;
             font-size: 1.3em;
-            color: #ff69b4;
+            color: #ff69b4; /* Ensure text color is readable */
+            background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent white background */
+            border-radius: 10px; /* Add some roundness to the corners */
+            padding: 10px; /* Add padding for better spacing */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Optional: add shadow to make the scoreboard stand out */
+        }
+
+        .scoreboard .score, .scoreboard .timer {
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5); /* Add a subtle text shadow for readability */
+            font-weight: bold; /* Make the text bold for better visibility */
+        }
+
+        .scoreboard .score {
+            color: #ff3385; /* Match the color of Mines Left with Time */
         }
 
         .board {
@@ -73,8 +133,10 @@
         }
 
         .cell.revealed.mined {
-            background-color: #ff4b84;
-            color: white;
+            background-image: url('Icons/heart.gif'); /* Replace with your heart GIF */
+            background-size: cover;
+            background-position: center;
+            color: transparent;
         }
 
         .cell:hover {
@@ -94,7 +156,7 @@
             color: #ff3385;
         }
 
-        .start-button, .reset-button, .hint-button {
+        .reset-button, .hint-button {
             padding: 12px 30px;
             background-color: #ff69b4;
             color: white;
@@ -105,7 +167,7 @@
             margin-top: 20px;
         }
 
-        .start-button:hover, .reset-button:hover, .hint-button:hover {
+        .reset-button:hover, .hint-button:hover {
             background-color: #ff3385;
         }
 
@@ -131,8 +193,209 @@
     </style>
 </head>
 <body>
+    
+    <div class="chat-bubble-container">
+        <div class="chat-bubble">
+            <p class="chat-text" id="chat-text">You are my everything, Imane 💖</p>
+        </div>
+    </div>
+    
+    <style>
+        /* Positioning for the chat bubble container */
+        .chat-bubble-container {
+            position: absolute;
+            left: 20px;
+            bottom: 60%; /* Adjusted to move the bubble up */
+            transform: translateY(50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease-in-out;
+        }
+    
+        .chat-bubble-container:hover {
+            transform: translateY(0); /* Smooth transition on hover */
+        }
+    
+        /* Styling for the chat bubble */
+        .chat-bubble {
+            background: rgba(255, 255, 255, 0.3); /* Smoky transparent white */
+            color: white;
+            font-size: 1.4em;
+            font-family: 'Arial', sans-serif;
+            padding: 15px 25px;
+            border-radius: 25px;
+            max-width: 300px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Soft shadow for depth */
+            opacity: 0;
+            animation: fadeIn 2s forwards;
+            backdrop-filter: blur(10px); /* Applying the blur effect */
+            white-space: normal; /* Allow text to wrap normally */
+            overflow-wrap: break-word; /* Ensure long words wrap and don't overflow */
+        }
+    
+        /* Animation for chat bubble */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    
+        /* Styling for text */
+        .chat-text {
+            margin: 0;
+            white-space: normal; /* Allow text to wrap properly inside the bubble */
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            word-wrap: break-word; /* Prevent text overflow */
+        }
+    
+        /* Fade-out effect for the transition */
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+    
+    </style>
+    
+    <script>
+        // Array of romantic love messages for Imane
+        const messages = [
+            "You are my everything, Imane 💖",
+            "Imane, you light up my world more than you can ever imagine ✨",
+            "My hearts beats for you, Imane, I love you endlessly 💝",
+            "I hope you're enjoying the game<3 I love youuu",
+            "I will always be with you forever and always honey",
+            "I love you sososososoo much<3"
+        ];
+    
+        let messageIndex = 0;
+        const chatTextElement = document.getElementById("chat-text");
+    
+        // Function to change messages
+        function changeMessage() {
+            // Apply fade-out effect for old message
+            chatTextElement.style.animation = "fadeOut 1s forwards";
+            
+            // Wait for the fade-out animation to complete before changing message
+            setTimeout(() => {
+                messageIndex = (messageIndex + 1) % messages.length;
+                chatTextElement.textContent = messages[messageIndex];
+    
+                // Apply fade-in effect for new message
+                chatTextElement.style.animation = "fadeIn 1s forwards";
+            }, 1000); // Match the duration of fade-out animation (1s)
+        }
+    
+        // Change messages every 5 seconds
+        setInterval(changeMessage, 5000);
+    </script>
+    
+    <div class="button-container">
+        <!-- Arrow button to go to gifts.html -->
+        <a href="gifts.html">
+            <img src="Icons/arrow.gif" alt="Go to Gifts Gallery" class="gift-button">
+        </a>
+    
+        <!-- Chat bubble below the arrow -->
+        <div class="chat-bubble">
+            Click the Arrow to go to the Gifts Gallery 💖
+        </div>
+    </div>
+    
+    <style>
+        .button-container {
+            position: absolute;
+            right: 10%; /* Position to the right side */
+            top: 50%;
+            transform: translateY(-50%);
+            text-align: center;
+        }
+    
+        .gift-button {
+            width: 80px; /* Adjust the size of the arrow */
+            height: auto;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+    
+        .gift-button:hover {
+            transform: scale(1.1); /* Slightly enlarges the arrow on hover */
+        }
+    
+        /* Chat bubble styles */
+        .chat-bubble {
+            background: rgba(255, 255, 255, 0.7); /* Semi-transparent background */
+            color: #ff69b4; /* Pink text */
+            padding: 10px 20px;
+            border-radius: 15px;
+            font-size: 1em;
+            font-weight: bold;
+            max-width: 250px;
+            text-align: center;
+            margin-top: 10px; /* Space between the arrow and the bubble */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Soft shadow */
+        }
+    </style>
+ <!-- Gift image positioned at the bottom left -->
+<img src="Icons/love2.gif" alt="Gift" class="gift-image">
 
-    <h1>Valentine's Minesweeper 💖</h1>
+<style>
+    .gift-image {
+        position: fixed;
+        bottom: 5px; /* Distance from the bottom */
+        left: 20px; /* Distance from the left */
+        width: 250px; /* Size of the gift image */
+        height: auto; /* Maintain the aspect ratio */
+        z-index: 1000; /* Ensure it's above other elements */
+        transition: transform 0.3s ease; /* Add smooth hover effect */
+    }
+
+    .gift-image:hover {
+        transform: scale(1.1); /* Slightly enlarge the image on hover */
+    }
+</style>
+
+<script>
+    // Get the audio elements
+    const backClickSound = document.getElementById('back-click-sound');
+    const arrowClickSound = document.getElementById('arrow-click-sound');
+
+    // Add event listener for the back button
+    const backButton = document.querySelector('.back-button-container');
+    backButton.addEventListener('click', () => {
+        backClickSound.play(); // Play the back button sound
+    });
+
+    // Add event listener for the arrow button
+    const arrowButton = document.querySelector('.gift-button');
+    arrowButton.addEventListener('click', () => {
+        arrowClickSound.play(); // Play the arrow button sound
+    });
+    
+</script>
+
+
+    <!-- Back button (GIF to go back to index.html) -->
+    <a href="index.html" title="Back to Home">
+        <div class="back-button-container">
+            <img src="Icons/heart3.gif" alt="Back Button" loop class="back-button" />
+            <div class="back-bubble">Back</div>
+        </div>
+    </a>
+
+
+
+    <h1> Imane's Arcade: LoveSweeper 💖</h1>
 
     <div class="scoreboard">
         <div class="score">Mines Left: <span id="mines-left">10</span></div>
@@ -141,18 +404,36 @@
 
     <div class="board" id="board"></div>
 
-    <button class="start-button" onclick="startGame()">Start Game</button>
     <button class="reset-button" onclick="resetGame()">Reset Game</button>
-    <button class="hint-button" onclick="giveHint()">Hint</button>
+    <button class="hint-button" id="hint-button" onclick="giveHint()">Hint</button>
 
     <div class="message" id="message"></div>
 
     <div class="heart">❤️</div>
 
+    <audio id="background-music" src="Audio/game.mp3" loop autoplay muted></audio>
+
+<script>
+    // Unmute the audio once the page is loaded or after user interaction
+    document.addEventListener('DOMContentLoaded', function () {
+        const backgroundMusic = document.getElementById('background-music');
+        // Wait for user interaction (click or any other action)
+        document.body.addEventListener('click', function () {
+            backgroundMusic.muted = false; // Unmute once user clicks anywhere on the page
+            backgroundMusic.play(); // Start playing the audio
+        });
+    });
+</script>
+
     <!-- Audio elements -->
-    <audio id="click-sound" src="https://www.soundjay.com/button/beep-07.wav"></audio>
+    <audio id="click-sound" src="Audio/click.wav"></audio>
     <audio id="game-over-sound" src="https://www.soundjay.com/button/beep-08.wav"></audio>
     <audio id="win-sound" src="https://www.soundjay.com/button/beep-04.wav"></audio>
+    <audio id="back-button-sound" src="Audio/button.mp3"></audio>
+    <audio id="arrow-click-sound" src="Audio/button.mp3"></audio>
+
+    <!-- Add your background music -->
+<audio id="background-music" src="Audio/blue.mp3" loop autoplay></audio>
 
     <script>
         const boardElement = document.getElementById('board');
@@ -162,6 +443,7 @@
         const clickSound = document.getElementById('click-sound');
         const gameOverSound = document.getElementById('game-over-sound');
         const winSound = document.getElementById('win-sound');
+        const hintButton = document.getElementById('hint-button');
         
         let board = [];
         let revealedCells = 0;
@@ -170,6 +452,7 @@
         let gameOver = false;
         let timer;
         let secondsElapsed = 0;
+        let timerStarted = false; // To ensure timer starts only once when the user starts playing
 
         function startGame() {
             gameOver = false;
@@ -184,12 +467,13 @@
             createBoard();
             placeMines();
             calculateAdjacentMines();
-            startTimer();
+            hintButton.style.display = "inline-block"; // Show the hint button
+            resetTimer(); // Reset the timer at the start of a new game
         }
 
         function resetGame() {
-            clearInterval(timer);
-            startGame();
+            clearInterval(timer); // Clear previous timer
+            startGame(); // Start a new game
         }
 
         function createBoard() {
@@ -247,16 +531,34 @@
             const cell = board[row][col];
             if (cell.classList.contains('revealed') || cell.classList.contains('flagged')) return;
 
+            if (!timerStarted) {
+                startTimer();
+                timerStarted = true;
+            }
+
             cell.classList.add('revealed');
             clickSound.play();
             revealedCells++;
 
             if (cell.classList.contains('mined')) {
-                cell.style.backgroundColor = '#ff4b84';
-                cell.style.color = 'white';
+                // Ensure only one heart is added
+                if (!cell.querySelector('img')) {
+                    const heartImage = document.createElement('img');
+                    heartImage.src = 'Icons/heart.gif'; // Your local heart GIF path
+                    heartImage.style.width = '50px';
+                    heartImage.style.height = '50px';
+                    heartImage.style.display = 'block';
+                    heartImage.style.margin = 'auto';
+                    heartImage.style.position = 'relative';
+                    cell.appendChild(heartImage);
+                }
+
                 gameOverSound.play();
                 gameOver = true;
-                messageElement.textContent = 'Game Over! 💔';
+                stopTimer();
+                revealAllMines();
+                messageElement.textContent = 'YOU GOT THIS BABY!';
+                hintButton.style.display = "none";
                 return;
             }
 
@@ -270,8 +572,10 @@
 
             if (revealedCells === 64 - totalMines) {
                 winSound.play();
-                messageElement.textContent = 'You Win! 💖';
-                clearInterval(timer);
+                stopTimer();
+                revealAllMines();
+                messageElement.textContent = 'YOU WON BABY GOOD JOB MI AMOR :D';
+                hintButton.style.display = "none";
             }
         }
 
@@ -311,6 +615,15 @@
             }, 1000);
         }
 
+        function stopTimer() {
+            clearInterval(timer);
+        }
+
+        function resetTimer() {
+            secondsElapsed = 0;
+            timerElement.textContent = '00:00';
+        }
+
         function giveHint() {
             if (gameOver) return;
             let hintGiven = false;
@@ -321,6 +634,28 @@
                 if (!cell.classList.contains('revealed') && !cell.classList.contains('mined')) {
                     revealCell(randomRow, randomCol);
                     hintGiven = true;
+                }
+            }
+        }
+
+        function revealAllMines() {
+            for (let row = 0; row < 8; row++) {
+                for (let col = 0; col < 8; col++) {
+                    const cell = board[row][col];
+                    if (cell.classList.contains('mined')) {
+                        cell.classList.add('revealed');
+                        // Add heart GIF here to all mines
+                        if (!cell.querySelector('img')) {
+                            const heartImage = document.createElement('img');
+                            heartImage.src = 'Icons/heart.gif'; // Your local heart GIF path
+                            heartImage.style.width = '50px';
+                            heartImage.style.height = '50px';
+                            heartImage.style.display = 'block';
+                            heartImage.style.margin = 'auto';
+                            heartImage.style.position = 'relative';
+                            cell.appendChild(heartImage);
+                        }
+                    }
                 }
             }
         }
