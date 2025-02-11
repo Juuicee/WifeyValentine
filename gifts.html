@@ -20,6 +20,7 @@
             align-items: center;
             flex-direction: column;
             height: 100vh;
+            position: relative;
         }
 
         /* Back button styling */
@@ -227,6 +228,27 @@
             transform: scale(1.1);
         }
 
+        /* Romantic Floating Bubble at the bottom */
+        .romantic-bubble {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent foggy effect */
+            color: white;
+            font-size: 1.2em;
+            padding: 15px 30px;
+            border-radius: 25px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            margin-bottom: 10px;
+        }
+
     </style>
 </head>
 <body>
@@ -291,6 +313,11 @@
         <img src="Icons/arrow2.gif" alt="Go to Gratitude">
     </a>
 
+    <!-- Romantic Bubble at the Bottom -->
+    <div class="romantic-bubble" id="romantic-bubble">
+        Next page is the final page, just click the arrow to the side. <3 I hope you've enjoyed it so far, mi amor. I love you so much.
+    </div>
+
     <script>
         function startGallery() {
             // Play the click sound
@@ -308,6 +335,16 @@
             // Show the arrow link after the gallery is shown
             document.getElementById('arrow-link').style.display = 'block';
         }
+
+        // Show the romantic bubble when the user scrolls to the bottom
+        window.onscroll = function() {
+            var bubble = document.getElementById("romantic-bubble");
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+                bubble.style.opacity = "1"; // Show the bubble
+            } else {
+                bubble.style.opacity = "0"; // Hide the bubble
+            }
+        };
     </script>
 
 </body>
